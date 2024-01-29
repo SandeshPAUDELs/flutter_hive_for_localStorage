@@ -27,9 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-
-
   final _controller = TextEditingController();
+
   void checkBoxChanged(bool? value, int index) {
     setState(() {
       db.toDoList[index][1] = !db.toDoList[index][1];
@@ -46,43 +45,40 @@ class _HomeScreenState extends State<HomeScreen> {
     db.updateDataBase();
   }
 
-
   void createNewTask() {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Add To Do here'),
-        content: Column(
-          children: [
-            TextField(
-              controller: TextEditingController(),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Add To do here',
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add To Do here'),
+          content: Column(
+            children: [
+              TextField(
+                controller: _controller, // Pass the controller here
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Add To do here',
+                ),
               ),
+            ],
+          ),
+          actions: [
+            OutlinedButton(
+              onPressed: SaveNewTask, // Call SaveNewTask method on press
+              child: Text('Save'),
+            ),
+            OutlinedButton(
+              onPressed: (){
+                Navigator.of(context).pop();
+                _controller.clear();
+              },
+              child: Text('Cancel'),
             ),
           ],
-        ),
-        actions: [
-         OutlinedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _controller.clear();
-            },
-            child: Text('Save'),
-          ),
-          OutlinedButton(onPressed: (){
-            Navigator.of(context).pop();
-            _controller.clear();
-          }, child: Text('Cancel'))
-
-        ],
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 
   void deleteTask(int index) {
     setState(() {
@@ -91,18 +87,14 @@ class _HomeScreenState extends State<HomeScreen> {
     db.updateDataBase();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('To do')),
-
-      floatingActionButton: FloatingActionButton(onPressed: () => createNewTask,
-      child: Icon(Icons.add)),
-
-
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: createNewTask, // Call createNewTask method on press
+        child: Icon(Icons.add),
+      ),
       body: ListView.builder(
         itemCount: db.toDoList.length,
         itemBuilder: (context, index) {
@@ -111,11 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
             taskCompleted: db.toDoList[index][1],
             onChanged: (value) => checkBoxChanged(value, index),
             deleteFunction: (context) => deleteTask(index),
-            
-
           );
-        },),
+        },
+      ),
     );
   }
-  
 }
